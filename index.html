@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enactus Bindura University of Science Education</title>
+    <style>
+         :root {
+            --bg: #0a1324;
+            --ink: #eff7ff;
+            --gold: #f9be58;
+            --teal: #1fc3a7;
+            --rose: #ff6b7a;
+            --glass: rgba(255, 255, 255, 0.1);
+            --line: rgba(255, 255, 255, 0.28);
+            --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+            --serif: "Bodoni MT", "Times New Roman", serif;
+            --sans: "Segoe UI", "Trebuchet MS", sans-serif;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        html,
+        body {
+            overscroll-behavior-y: none;
+        }
+        
+        body {
+            font-family: var(--sans);
+            color: var(--ink);
+            background: radial-gradient(circle at 10% 15%, #1f2d4f 0%, #0d1a32 35%, #070e1d 100%);
+            overflow-x: hidden;
+            min-height: 100vh;
+            -webkit-text-size-adjust: 100%;
+            touch-action: pan-y;
+        }
+        
+        .cinema-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.65)), repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px);
+            pointer-events: none;
+            z-index: 4;
+            animation: flicker 6s infinite steps(2);
+        }
+        
+        @keyframes flicker {
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+            20% {
+                opacity: 0.34;
+            }
+            33% {
+                opacity: 0.42;
+            }
+            61% {
+                opacity: 0.3;
+            }
+            80% {
+                opacity: 0.39;
+            }
+        }
+        
+        .bg-slides {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            inset: -6%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transform: scale(1.06);
+            animation: showSlide 28s infinite;
+            filter: saturate(1.05) contrast(1.1);
+            will-change: transform, opacity;
+        }
+        
+        .slide::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(9, 18, 40, 0.86), rgba(10, 20, 40, 0.48));
+        }
+        
+        @keyframes showSlide {
+            0% {
+                opacity: 0;
+                transform: scale(1.08);
+            }
+            8% {
+                opacity: 1;
+            }
+            25% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            33% {
+                opacity: 0;
+                transform: scale(1.04);
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+        
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(14px);
+            background: rgba(6, 13, 25, 0.58);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+        }
+        
+        .nav {
+            max-width: 1150px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.9rem 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-family: var(--serif);
+            letter-spacing: 0.04em;
+            font-size: clamp(1.05rem, 2vw, 1.35rem);
+            color: #fff;
+            text-shadow: 0 0 16px rgba(249, 190, 88, 0.35);
+        }
+        
+        .brand-logo {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            object-position: center;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+            padding: 0.12rem;
+            flex-shrink: 0;
+        }
+        
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+            min-width: 0;
+        }
+        
+        .brand span {
+            color: var(--gold);
+        }
+        
+        .menu {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            contain: layout style;
+        }
+        
+        .menu-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.25s ease, transform 0.25s ease;
+        }
+        
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.14);
+            transform: translateY(-1px);
+        }
+        
+        .menu-toggle span,
+        .menu-toggle::before,
+        .menu-toggle::after {
+            content: "";
+            display: block;
+            width: 20px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+        
+        .menu-toggle span {
+            position: relative;
+        }
+        
+        .menu-toggle::before {
+            transform: translateY(-6px);
+        }
+        
+        .menu-toggle::after {
+            transform: translateY(6px);
+        }
+        
+        .menu-toggle.is-open span {
+            opacity: 0;
+        }
+        
+        .menu-toggle.is-open::before {
+            transform: translateY(2px) rotate(45deg);
+        }
+        
+        .menu-toggle.is-open::after {
+            transform: rotate(-45deg);
+        }
+        
+        .menu a {
+            transition: 0.25s ease;
+        }
+        
+        .menu a {
+            color: var(--ink);
+            text-decoration: none;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            transition: 0.25s ease;
+            font-size: 0.95rem;
+        }
+        
+        .menu a:hover {
+            border-color: var(--line);
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .hero {
+            min-height: 90vh;
+            display: grid;
+            place-items: center;
+            padding: 4rem 1rem 3rem;
+            position: relative;
+        }
+        
+        .hero-inner {
+            width: min(1100px, 96%);
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 1.3rem;
+            align-items: stretch;
+        }
+        
+        .panel {
+            background: linear-gradient(130deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+        
+        .headline {
+            padding: clamp(1.2rem, 2.8vw, 2.6rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1rem;
+            overflow: hidden;
+        }
+        
+        .headline p.kicker {
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            color: var(--teal);
+            opacity: 0.95;
+            animation: textFloat 4s ease-in-out infinite;
+        }
+        
+        .headline h1 {
+            font-family: var(--serif);
+            font-size: clamp(2rem, 5.3vw, 4rem);
+            line-height: 1.03;
+            font-weight: 700;
+            text-wrap: balance;
+        }
+        
+        .headline h1 .glow {
+            color: var(--gold);
+            text-shadow: 0 0 22px rgba(249, 190, 88, 0.35);
+        }
+        
+        .headline .sub {
+            font-size: clamp(0.98rem, 1.3vw, 1.1rem);
+            max-width: 60ch;
+            color: rgba(239, 247, 255, 0.92);
+            text-wrap: pretty;
+        }
+        
+        .hero-cta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-top: 0.5rem;
+        }
+        
+        .btn {
+            text-decoration: none;
+            color: #fff;
+            border-radius: 999px;
+            padding: 0.68rem 1rem;
+            font-weight: 600;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        
+        .btn.primary {
+            background: linear-gradient(90deg, var(--gold), #ff9b5e);
+            color: #111;
+        }
+        
+        .btn.ghost {
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .stats {
+            padding: 1.1rem;
+            display: grid;
+            gap: 0.8rem;
+            align-content: center;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 16px;
+            padding: 1rem;
+            display: grid;
+            gap: 0.2rem;
+            transform: translateX(25px);
+            opacity: 0;
+            animation: revealIn 0.9s ease forwards;
+        }
+        
+        .stat-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .stat-card:nth-child(3) {
+            animation-delay: 0.35s;
+        }
+        
+        .stat-card h3 {
+            font-size: 1.65rem;
+            color: var(--gold);
+            font-family: var(--serif);
+        }
+        
+        .stat-card p {
+            color: rgba(239, 247, 255, 0.9);
+            font-size: 0.93rem;
+        }
+        
+        @keyframes revealIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes textFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+        
+        section {
+            width: min(1100px, 96%);
+            margin: 0 auto 1.1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .about,
+        .partners,
+        .recruit,
+        .contact {
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04));
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(9px);
+            overflow: hidden;
+        }
+        
+        .about {
+            grid-column: span 7;
+            padding: 1.25rem;
+        }
+        
+        .partners {
+            grid-column: span 5;
+            padding: 1.25rem;
+        }
+        
+        .recruit {
+            grid-column: span 7;
+            padding: 1.25rem;
+        }
+        
+        .contact {
+            grid-column: span 5;
+            padding: 1.25rem;
+        }
+        
+        h2 {
+            font-family: var(--serif);
+            font-size: clamp(1.5rem, 2.4vw, 2.3rem);
+            margin-bottom: 0.6rem;
+        }
+        
+        .about p,
+        .partners p,
+        .contact p {
+            line-height: 1.7;
+            color: rgba(239, 247, 255, 0.92);
+            margin-bottom: 0.8rem;
+        }
+        
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+        
+        .chip {
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.07);
+            font-size: 0.86rem;
+        }
+        
+        .partners-strip {
+            display: flex;
+            gap: 0.8rem;
+            overflow: hidden;
+            padding: 0.4rem 0;
+            mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+        }
+        
+        .partner-badge {
+            min-width: 170px;
+            padding: 0.6rem 0.8rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.17);
+            animation: marquee 11s linear infinite;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+        }
+        
+        @keyframes marquee {
+            from {
+                transform: translateX(20%);
+            }
+            to {
+                transform: translateX(-200%);
+            }
+        }
+        
+        .recruit form {
+            display: grid;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+        
+        .row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.8rem;
+        }
+        
+        input,
+        textarea,
+        button {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.27);
+            border-radius: 12px;
+            padding: 0.68rem 0.8rem;
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font: inherit;
+        }
+        
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+        
+        input::file-selector-button {
+            background: linear-gradient(90deg, #19a38d, #0d7f83);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.35rem 0.62rem;
+            cursor: pointer;
+            margin-right: 0.7rem;
+        }
+        
+        .submit-row {
+            display: flex;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .status {
+            font-size: 0.9rem;
+            color: var(--teal);
+            min-height: 1.2rem;
+        }
+        
+        button {
+            width: auto;
+            background: linear-gradient(90deg, #f9be58, #ff9166);
+            color: #111;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .contact-list {
+            display: grid;
+            gap: 0.55rem;
+            margin: 0.9rem 0;
+        }
+        
+        .contact-item {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 0.7rem;
+            border-radius: 12px;
+        }
+        
+        .contact-item a {
+            color: #fff;
+            text-decoration: none;
+            overflow-wrap: anywhere;
+        }
+        
+        .socials {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-top: 0.6rem;
+        }
+        
+        .social {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.08);
+            text-decoration: none;
+            color: #fff;
+            transition: transform 0.24s cubic-bezier(.2, .8, .2, 1), background 0.2s ease;
+            transform: translate3d(var(--drag-x, 0px), var(--drag-y, 0px), 0);
+            will-change: transform;
+        }
+        
+        .social svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+        
+        .social:hover {
+            background: rgba(255, 255, 255, 0.17);
+            transform: translate3d(var(--drag-x, 0px), var(--drag-y, 0px), 0) translateY(-3px) scale(1.05);
+        }
+        
+        .social.is-draggable {
+            touch-action: none;
+            user-select: none;
+            cursor: grab;
+        }
+        
+        .social.is-dragging {
+            cursor: grabbing;
+            z-index: 3;
+            transition: none;
+        }
+        
+        iframe {
+            max-width: 100%;
+        }
+        
+        footer {
+            text-align: center;
+            color: rgba(239, 247, 255, 0.86);
+            padding: 1.2rem 1rem 2.4rem;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+        
+        .floating-words {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .word {
+            position: absolute;
+            font-family: var(--serif);
+            color: rgba(255, 255, 255, 0.11);
+            letter-spacing: 0.05em;
+            animation: drift 14s linear infinite;
+            user-select: none;
+        }
+        
+        @keyframes drift {
+            from {
+                transform: translateY(18vh) rotate(0deg);
+                opacity: 0;
+            }
+            15% {
+                opacity: 1;
+            }
+            85% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-108vh) rotate(-8deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 920px) {
+            header {
+                position: static;
+            }
+            html {
+                scroll-behavior: auto;
+            }
+            .cinema-overlay {
+                animation: none;
+                opacity: 0.24;
+            }
+            .floating-words {
+                display: none;
+            }
+            .slide {
+                filter: saturate(1) contrast(1.02);
+            }
+            .partner-badge {
+                animation-duration: 20s;
+            }
+            .nav {
+                justify-content: center;
+                padding: 0.85rem 0.9rem;
+            }
+            .brand {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+            .menu {
+                width: 100%;
+                justify-content: center;
+            }
+            .hero-inner {
+                grid-template-columns: 1fr;
+                width: min(720px, 100%);
+            }
+            .hero {
+                min-height: auto;
+                padding-top: 2.4rem;
+            }
+            .about,
+            .partners,
+            .recruit,
+            .contact {
+                grid-column: span 12;
+            }
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 720px) {
+            .nav {
+                align-items: flex-start;
+                gap: 0.85rem;
+            }
+            .menu-toggle {
+                display: inline-flex;
+                margin-left: auto;
+            }
+            .brand {
+                gap: 0.65rem;
+                font-size: 1rem;
+                width: calc(100% - 56px);
+                justify-content: flex-start;
+                text-align: left;
+            }
+            .brand-logo {
+                width: 48px;
+                height: 48px;
+                border-radius: 14px;
+            }
+            .menu {
+                display: flex;
+                overflow: hidden;
+                width: 100%;
+                max-height: 0;
+                opacity: 0;
+                transform: translateY(-10px);
+                pointer-events: none;
+                gap: 0.55rem;
+                padding: 0 0.3rem;
+                margin-top: 0;
+                border-radius: 18px;
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                background: rgba(255, 255, 255, 0.06);
+                transition: max-height 0.35s ease, opacity 0.28s ease, transform 0.28s ease, padding 0.28s ease, margin-top 0.28s ease;
+            }
+            .menu.is-open {
+                max-height: 260px;
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto;
+                padding: 0.35rem;
+                margin-top: 0.2rem;
+            }
+            .menu a {
+                flex: 1 1 calc(50% - 0.55rem);
+                text-align: center;
+                min-width: 0;
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            .menu.is-open a {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .menu.is-open a:nth-child(1) {
+                transition-delay: 0.04s;
+            }
+            .menu.is-open a:nth-child(2) {
+                transition-delay: 0.08s;
+            }
+            .menu.is-open a:nth-child(3) {
+                transition-delay: 0.12s;
+            }
+            .menu.is-open a:nth-child(4) {
+                transition-delay: 0.16s;
+            }
+            .hero {
+                padding: 1.8rem 0.8rem 2.2rem;
+            }
+            .headline,
+            .stats,
+            .about,
+            .partners,
+            .recruit,
+            .contact {
+                padding: 1rem;
+                content-visibility: auto;
+                contain-intrinsic-size: 1px 520px;
+            }
+            .headline p.kicker {
+                letter-spacing: 0.24em;
+                font-size: 0.68rem;
+            }
+            .headline h1 {
+                font-size: clamp(1.85rem, 9vw, 3rem);
+            }
+            .hero-cta {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+            .grid {
+                gap: 0.85rem;
+            }
+            .partners-strip {
+                mask-image: none;
+            }
+            .contact-list,
+            .socials,
+            .chips {
+                gap: 0.55rem;
+            }
+            .submit-row {
+                align-items: stretch;
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+            .cinema-overlay,
+            .word,
+            .slide,
+            .partner-badge,
+            .headline p.kicker,
+            .stat-card {
+                animation: none !important;
+            }
+            .menu,
+            .menu a,
+            .btn,
+            .social,
+            .menu-toggle {
+                transition: none !important;
+            }
+        }
+        
+        @media (max-width: 520px) {
+            section,
+            .hero-inner {
+                width: min(100%, calc(100vw - 1rem));
+            }
+            .nav {
+                padding-inline: 0.55rem;
+            }
+            .brand {
+                align-items: flex-start;
+                width: calc(100% - 52px);
+            }
+            .brand-text {
+                text-align: left;
+            }
+            .menu a {
+                flex-basis: 100%;
+                min-width: 0;
+                font-size: 0.9rem;
+                padding: 0.55rem 0.75rem;
+            }
+            .headline,
+            .stats,
+            .about,
+            .partners,
+            .recruit,
+            .contact {
+                border-radius: 18px;
+                padding: 0.9rem;
+            }
+            .stat-card {
+                padding: 0.9rem;
+            }
+            .stat-card h3 {
+                font-size: 1.4rem;
+            }
+            .social {
+                width: 42px;
+                height: 42px;
+            }
+            input,
+            textarea,
+            button {
+                padding: 0.72rem 0.78rem;
+            }
+            footer {
+                font-size: 0.84rem;
+                padding-inline: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 390px) {
+            .brand {
+                gap: 0.55rem;
+                font-size: 0.94rem;
+            }
+            .brand-logo {
+                width: 44px;
+                height: 44px;
+            }
+            .headline h1 {
+                font-size: clamp(1.7rem, 10vw, 2.5rem);
+            }
+            .headline .sub,
+            .about p,
+            .partners p,
+            .contact p,
+            .recruit p {
+                font-size: 0.94rem;
+            }
+            .chip,
+            .partner-badge {
+                font-size: 0.82rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-slides" id="bgSlides" aria-hidden="true"></div>
+    <div class="floating-words" id="floatingWords" aria-hidden="true"></div>
+    <div class="cinema-overlay" aria-hidden="true"></div>
+
+    <header>
+        <nav class="nav">
+            <div class="brand">
+                <img class="brand-logo" id="brandLogo" src="" alt="Enactus BUSE logo" />
+                <div class="brand-text">Enactus <span>Bindura University of Science Education</span></div>
+            </div>
+            <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="siteMenu"><span></span></button>
+            <div class="menu" id="siteMenu">
+                <a href="#home">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#recruitment">Recruitment</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="home" class="hero">
+        <div class="hero-inner">
+            <article class="panel headline">
+                <p class="kicker">Innovation. Entrepreneurship. Impact.</p>
+                <h1>
+                    Building a <span class="glow">sustainable future</span><br /> through student-led action.
+                </h1>
+                <p class="sub">
+                    Enactus Bindura University of Science Education transforms bold ideas into real community impact. We blend business innovation, social entrepreneurship and sustainability to create solutions that last.
+                </p>
+                <div class="hero-cta">
+                    <a class="btn primary" href="#recruitment">Join the Movement</a>
+                    <a class="btn ghost" href="#about">Explore Our Story</a>
+                </div>
+            </article>
+
+            <aside class="panel stats">
+                <div class="stat-card">
+                    <h3>Global Recognition</h3>
+                    <p>Multiple international awards and global-stage project visibility.</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Local + Global Partners</h3>
+                    <p>Collaborating with institutions, businesses and NGOs for scalable change.</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Sustainability Focus</h3>
+                    <p>Projects aligned with social, environmental and economic progress.</p>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <section>
+        <div class="grid">
+            <article id="about" class="about">
+                <h2>About Us</h2>
+                <p>
+                    We are a Dynamic International Club of innovators and entrepreneurs at Bindura University of Science Education. Enactus members design and launch projects that improve livelihoods, promote sustainability and empower communities.
+                </p>
+                <p>
+                    Our work has earned international recognition, and our mission stays clear: using entrepreneurial action to create a better, more inclusive world.
+                </p>
+                <div class="chips">
+                    <span class="chip">International Awards</span>
+                    <span class="chip">Youth Innovation</span>
+                    <span class="chip">Social Entrepreneurship</span>
+                    <span class="chip">Sustainable Development</span>
+                </div>
+            </article>
+
+            <article class="partners">
+                <h2>Partnership Network</h2>
+                <p>
+                    We connect with local and global partners who share our values and vision for long-term impact.
+                </p>
+                <div class="partners-strip" aria-label="Partners moving strip">
+                    <div class="partner-badge">Corporate Partners</div>
+                    <div class="partner-badge">Community Leaders</div>
+                    <div class="partner-badge">Global Enactus Network</div>
+                    <div class="partner-badge">Innovation Hubs</div>
+                    <div class="partner-badge">Sustainability Advocates</div>
+                    <div class="partner-badge">Development Agencies</div>
+                </div>
+            </article>
+        </div>
+
+        <div class="grid">
+            <article id="recruitment" class="recruit">
+                <h2>Recruitment</h2>
+                <p>
+                    Ready to be part of Enactus BUSE? Send your details and CV. Applications and attachments are submitted directly to the Enactus Official Email Account.
+                </p>
+                <form id="cvForm" action="https://formsubmit.co/enactusbindurauniversity@gmail.com" method="POST" enctype="multipart/form-data" target="recruitmentTarget" novalidate>
+                    <input type="hidden" name="_captcha" value="false" />
+                    <input type="hidden" name="_template" value="table" />
+                    <input type="hidden" name="_subject" id="recruitmentSubject" value="Recruitment Application - Enactus BUSE" />
+                    <div class="row">
+                        <input type="text" id="name" name="name" placeholder="Full Name" required />
+                        <input type="email" id="email" name="email" placeholder="Email Address" required />
+                    </div>
+                    <div class="row">
+                        <input type="tel" id="phone" name="phone" placeholder="Phone Number" required />
+                        <input type="file" id="cv" name="attachment" accept=".pdf,.doc,.docx" required />
+                    </div>
+                    <textarea id="message" name="message" placeholder="Tell us why you want to join Enactus BUSE" required></textarea>
+                    <div class="submit-row">
+                        <button type="submit">Send CV Application</button>
+                        <span class="status" id="statusText" aria-live="polite"></span>
+                    </div>
+                </form>
+                <iframe name="recruitmentTarget" id="recruitmentTarget" title="Recruitment submission" hidden></iframe>
+            </article>
+
+            <article id="contact" class="contact">
+                <h2>Contact Us</h2>
+                <p>For inquiries and partnerships, reach out directly:</p>
+                <div class="contact-list">
+                    <div class="contact-item">
+                        <strong>Phone:</strong>
+                        <a href="tel:+263714790908"> +263 71 479 0908</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>Email:</strong>
+                        <a href="mailto:enactusbindurauniversity@gmail.com"> enactusbindurauniversity@gmail.com</a>
+                    </div>
+                </div>
+                <p>Connect with us on social media:</p>
+                <div class="socials">
+                    <a class="social" id="socialFacebook" href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 8H16V4.5h-2.9C9.9 4.5 8 6.4 8 9.6V12H5v3.5h3V22h3.7v-6.5h3.1L15.5 12h-3.8V10c0-1.1.4-2 1.8-2z"/></svg>
+                    </a>
+                    <a class="social" id="socialInstagram" href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.2A4.8 4.8 0 1 0 12 16.8 4.8 4.8 0 1 0 12 7.2zm0 7.9A3.1 3.1 0 1 1 12 8.9a3.1 3.1 0 0 1 0 6.2zm6.1-8.1a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM22 8.3c-.1-1.9-.5-3.6-1.9-4.9S17 1.6 15.1 1.5C13.2 1.4 10.8 1.4 8.9 1.5 7 1.6 5.3 2 4 3.4S1.6 6.5 1.5 8.4c-.1 1.9-.1 4.3 0 6.2.1 1.9.5 3.6 1.9 4.9S7 22.4 8.9 22.5c1.9.1 4.3.1 6.2 0 1.9-.1 3.6-.5 4.9-1.9s1.8-3 1.9-4.9c.1-1.9.1-4.3 0-6.2zM20.3 15c-.1 1.4-.4 2.2-1 2.8-.6.6-1.4.9-2.8 1-1.8.1-7.1.1-8.9 0-1.4-.1-2.2-.4-2.8-1-.6-.6-.9-1.4-1-2.8-.1-1.8-.1-7.1 0-8.9.1-1.4.4-2.2 1-2.8.6-.6 1.4-.9 2.8-1 1.8-.1 7.1-.1 8.9 0 1.4.1 2.2.4 2.8 1 .6.6.9 1.4 1 2.8.1 1.8.1 7.1 0 8.9z"/></svg>
+                    </a>
+                    <a class="social" id="socialLinkedIn" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.2 8.6H2.8V21h3.4V8.6zM4.5 3A2 2 0 1 0 4.5 7 2 2 0 1 0 4.5 3zm17.7 10.4c0-3.3-1.8-4.9-4.3-4.9-2 0-2.9 1.1-3.4 1.9V8.6h-3.3V21h3.3v-6.2c0-1.6.3-3.1 2.3-3.1 1.9 0 1.9 1.8 1.9 3.2V21H22v-7.6z"/></svg>
+                    </a>
+                    <a class="social" id="socialTikTok" href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3h3.2c.2 1.7 1.2 3.1 2.8 3.8v3.2c-1.2 0-2.4-.3-3.5-.9V15c0 3.5-2.8 6.3-6.3 6.3S4.4 18.5 4.4 15s2.8-6.3 6.3-6.3c.3 0 .7 0 1 .1v3.4c-.3-.1-.7-.2-1-.2-1.7 0-3.1 1.4-3.1 3.1s1.4 3.1 3.1 3.1 3.1-1.4 3.1-3.1V3z"/></svg>
+                    </a>
+                    <a class="social" id="socialWhatsApp" href="https://whatsapp.com/channel/0029Vb4uMJwATRSnnKMHe50Z" target="_blank" rel="noopener" aria-label="WhatsApp Channel">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3.9A10.9 10.9 0 0 0 2.9 16.8L1.8 22l5.3-1.1A10.9 10.9 0 1 0 20 3.9zm-7.9 16c-1.7 0-3.3-.5-4.7-1.4l-.3-.2-3.1.6.7-3-.2-.3A8.5 8.5 0 1 1 12.1 19.9zm4.7-6.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.8.2-.2.3-.9.9-1.1 1.1-.2.2-.4.2-.7.1-.3-.2-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.5.1-.7.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.8-1.9-1.1-2.6-.3-.6-.6-.5-.8-.5h-.7c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.1.2 2 3 4.9 4.1.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.4z"/></svg>
+                    </a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <footer>
+        Enactus Bindura University of Science Education | Innovation Beyond Impact. | Designed by Will Digitals +263 71 589 5231
+    </footer>
+
+    <script>
+        const branding = {
+            logoSources: [
+                "https://drive.google.com/file/d/1tryLZ0jEkZ9mhJTwqGgCQSS3vCvcDukZ/view?usp=sharing",
+                "https://drive.google.com/thumbnail?id=1tryLZ0jEkZ9mhJTwqGgCQSS3vCvcDukZ&sz=w1000",
+                "https://drive.google.com/uc?export=view&id=1tryLZ0jEkZ9mhJTwqGgCQSS3vCvcDukZ",
+                "https://drive.google.com/uc?export=download&id=1tryLZ0jEkZ9mhJTwqGgCQSS3vCvcDukZ"
+            ]
+        };
+
+        function applyBranding() {
+            const brandLogo = document.getElementById("brandLogo");
+            if (!brandLogo || !branding.logoSources || !branding.logoSources.length) {
+                return;
+            }
+
+            let logoIndex = 0;
+            brandLogo.src = branding.logoSources[logoIndex];
+            brandLogo.onerror = () => {
+                logoIndex += 1;
+                if (logoIndex < branding.logoSources.length) {
+                    brandLogo.src = branding.logoSources[logoIndex];
+                }
+            };
+        }
+
+        applyBranding();
+
+        // Paste your official social links here.
+        const socialLinks = {
+            facebook: "https://www.facebook.com/enactus.buse.2025",
+            instagram: "https://www.instagram.com/enactus_bindura_university1?igsh=MXJoNzZxYjRrcXd0eA==",
+            linkedin: "https://www.linkedin.com/in/enactus-bindura-university-9039b9305?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+            tiktok: "https://www.tiktok.com/@enctusbuse.com?_r=1&_t=ZS-95hoI28iAy1",
+            whatsapp: "https://whatsapp.com/channel/0029Vb4uMJwATRSnnKMHe50Z"
+        };
+
+        function applySocialLinks() {
+            const map = [
+                ["socialFacebook", socialLinks.facebook],
+                ["socialInstagram", socialLinks.instagram],
+                ["socialLinkedIn", socialLinks.linkedin],
+                ["socialTikTok", socialLinks.tiktok],
+                ["socialWhatsApp", socialLinks.whatsapp]
+            ];
+
+            map.forEach(([id, url]) => {
+                const el = document.getElementById(id);
+                if (el && url) {
+                    el.href = url;
+                }
+            });
+        }
+
+        applySocialLinks();
+
+        const menuToggle = document.getElementById("menuToggle");
+        const siteMenu = document.getElementById("siteMenu");
+
+        function setMenuState(isOpen) {
+            if (!menuToggle || !siteMenu) {
+                return;
+            }
+
+            menuToggle.classList.toggle("is-open", isOpen);
+            siteMenu.classList.toggle("is-open", isOpen);
+            menuToggle.setAttribute("aria-expanded", String(isOpen));
+            menuToggle.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
+        }
+
+        if (menuToggle && siteMenu) {
+            menuToggle.addEventListener("click", () => {
+                setMenuState(!siteMenu.classList.contains("is-open"));
+            });
+
+            siteMenu.querySelectorAll("a").forEach((link) => {
+                link.addEventListener("click", () => {
+                    if (window.innerWidth <= 720) {
+                        setMenuState(false);
+                    }
+                });
+            });
+
+            window.addEventListener("resize", () => {
+                if (window.innerWidth > 720) {
+                    setMenuState(false);
+                }
+            });
+
+            document.addEventListener("click", (event) => {
+                if (window.innerWidth > 720 || !siteMenu.classList.contains("is-open")) {
+                    return;
+                }
+
+                if (!siteMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                    setMenuState(false);
+                }
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && siteMenu.classList.contains("is-open")) {
+                    setMenuState(false);
+                }
+            });
+        }
+
+        const hostedBackgroundFiles = [
+            "bg-001.webp", "bg-002.jpg", "bg-003.jpg", "bg-004.jpg", "bg-005.jpg", "bg-006.jpg", "bg-007.webp", "bg-008.webp",
+            "bg-009.webp", "bg-010.webp", "bg-011.jpg", "bg-012.jpg", "bg-013.webp", "bg-014.webp", "bg-015.jpg", "bg-016.jpg",
+            "bg-017.jpg", "bg-018.jpg", "bg-019.jpg", "bg-020.webp", "bg-021.webp", "bg-022.webp", "bg-023.webp", "bg-024.jpg",
+            "bg-025.jpg", "bg-026.webp", "bg-027.jpg", "bg-028.webp", "bg-029.webp", "bg-030.webp", "bg-031.webp", "bg-032.webp",
+            "bg-033.webp", "bg-034.webp", "bg-035.webp", "bg-036.webp", "bg-037.webp", "bg-038.webp", "bg-039.webp", "bg-040.webp",
+            "bg-041.webp", "bg-042.webp", "bg-043.webp", "bg-044.webp", "bg-045.webp", "bg-046.webp", "bg-047.webp", "bg-048.webp",
+            "bg-049.webp", "bg-050.jpg", "bg-051.jpg", "bg-052.jpg", "bg-053.webp", "bg-054.jpg", "bg-055.jpg", "bg-056.jpg",
+            "bg-057.webp", "bg-058.webp", "bg-059.webp", "bg-060.webp", "bg-061.webp", "bg-062.webp", "bg-063.webp", "bg-064.webp",
+            "bg-065.webp", "bg-066.webp", "bg-067.webp", "bg-068.webp", "bg-069.webp", "bg-070.webp", "bg-071.webp", "bg-072.webp",
+            "bg-073.webp", "bg-074.webp", "bg-075.webp", "bg-076.webp", "bg-077.webp", "bg-078.webp", "bg-079.jpg", "bg-080.jpg",
+            "bg-081.jpg", "bg-082.webp", "bg-083.jpg", "bg-084.jpg"
+        ];
+
+        const localBackgroundRootCandidates = [
+            "./HostedBackgrounds/",
+            "./hostedbackgrounds/",
+            "./ENACTUSBACK/HostedBackgrounds/",
+            "./EnactusBack/HostedBackgrounds/"
+        ];
+
+        function buildLocalBackgroundCandidates(fileNames) {
+            return localBackgroundRootCandidates.flatMap((rootPath) =>
+                fileNames.map((fileName) => new URL(`${rootPath}${fileName}`, window.location.href).href)
+            );
+        }
+
+        const bundledCinematicImages = buildLocalBackgroundCandidates(hostedBackgroundFiles);
+
+        const remoteFallbackCinematicImages = [
+            "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1800&q=80",
+            "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?auto=format&fit=crop&w=1800&q=80",
+            "https://images.unsplash.com/photo-1461354464878-ad92f492a5a0?auto=format&fit=crop&w=1800&q=80",
+            "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1800&q=80"
+        ];
+
+        let backgroundShuffleTimer = null;
+        let resolvedBackgroundImages = [];
+        let isMobileViewport = window.matchMedia("(max-width: 920px)").matches;
+
+        function shuffleArray(items) {
+            const arr = [...items];
+            for (let i = arr.length - 1; i > 0; i -= 1) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function setupBackgroundSlideshow(sourceImages) {
+            const bgSlides = document.getElementById("bgSlides");
+            const slideBudget = isMobileViewport ? 5 : 10;
+            const activeImages = shuffleArray(sourceImages).slice(0, Math.min(slideBudget, sourceImages.length));
+            const secondsPerSlide = isMobileViewport ? 5 : 6;
+            const cycleSeconds = activeImages.length * secondsPerSlide;
+
+            if (backgroundShuffleTimer) {
+                window.clearInterval(backgroundShuffleTimer);
+            }
+
+            bgSlides.innerHTML = "";
+
+            function applyShuffledSet() {
+                const shuffled = shuffleArray(activeImages);
+                const slides = bgSlides.querySelectorAll(".slide");
+
+                if (slides.length === 0) {
+                    shuffled.forEach((url, index) => {
+                        const slide = document.createElement("div");
+                        slide.className = "slide";
+                        slide.style.backgroundImage = `url("${url}")`;
+                        slide.style.animationDelay = `${index * secondsPerSlide}s`;
+                        slide.style.animationDuration = `${cycleSeconds}s`;
+                        bgSlides.appendChild(slide);
+                    });
+                    return;
+                }
+
+                slides.forEach((slide, index) => {
+                    slide.style.backgroundImage = `url("${shuffled[index]}")`;
+                });
+            }
+
+            applyShuffledSet();
+            backgroundShuffleTimer = window.setInterval(applyShuffledSet, cycleSeconds * 1000);
+        }
+
+        function enableDraggableSocialIcons() {
+            const shouldEnable = window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 920;
+            if (!shouldEnable) {
+                return;
+            }
+
+            const icons = document.querySelectorAll(".socials .social");
+            const maxOffset = 24;
+            const snapStep = 2;
+
+            icons.forEach((icon) => {
+                icon.classList.add("is-draggable");
+
+                let startX = 0;
+                let startY = 0;
+                let pointerStartX = 0;
+                let pointerStartY = 0;
+                let moved = false;
+                let activePointerId = null;
+
+                const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+                const snap = (value) => Math.round(value / snapStep) * snapStep;
+
+                function settleIconPosition() {
+                    const currentX = parseFloat(icon.style.getPropertyValue("--drag-x")) || 0;
+                    const currentY = parseFloat(icon.style.getPropertyValue("--drag-y")) || 0;
+
+                    const targetX = Math.abs(currentX) < 8 ? 0 : snap(currentX);
+                    const targetY = Math.abs(currentY) < 8 ? 0 : snap(currentY);
+
+                    icon.style.setProperty("--drag-x", `${clamp(targetX, -maxOffset, maxOffset)}px`);
+                    icon.style.setProperty("--drag-y", `${clamp(targetY, -maxOffset, maxOffset)}px`);
+                }
+
+                icon.addEventListener("pointerdown", (event) => {
+                    if (activePointerId !== null) {
+                        return;
+                    }
+
+                    pointerStartX = event.clientX;
+                    pointerStartY = event.clientY;
+                    startX = parseFloat(icon.style.getPropertyValue("--drag-x")) || 0;
+                    startY = parseFloat(icon.style.getPropertyValue("--drag-y")) || 0;
+                    moved = false;
+                    activePointerId = event.pointerId;
+                    icon.classList.add("is-dragging");
+                    icon.setPointerCapture(event.pointerId);
+                });
+
+                icon.addEventListener("pointermove", (event) => {
+                    if (!icon.classList.contains("is-dragging") || event.pointerId !== activePointerId) {
+                        return;
+                    }
+
+                    const deltaX = event.clientX - pointerStartX;
+                    const deltaY = event.clientY - pointerStartY;
+
+                    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+                        moved = true;
+                    }
+
+                    const nextX = clamp(startX + deltaX, -maxOffset, maxOffset);
+                    const nextY = clamp(startY + deltaY, -maxOffset, maxOffset);
+
+                    icon.style.setProperty("--drag-x", `${nextX}px`);
+                    icon.style.setProperty("--drag-y", `${nextY}px`);
+
+                    if (moved) {
+                        event.preventDefault();
+                    }
+                });
+
+                icon.addEventListener("pointerup", (event) => {
+                    if (icon.classList.contains("is-dragging") && event.pointerId === activePointerId) {
+                        icon.classList.remove("is-dragging");
+                        icon.releasePointerCapture(event.pointerId);
+                        activePointerId = null;
+                        settleIconPosition();
+                    }
+
+                    if (moved) {
+                        icon.dataset.dragMoved = "true";
+                        window.setTimeout(() => {
+                            delete icon.dataset.dragMoved;
+                        }, 180);
+                    }
+                });
+
+                icon.addEventListener("pointercancel", () => {
+                    icon.classList.remove("is-dragging");
+                    activePointerId = null;
+                    settleIconPosition();
+                });
+
+                icon.addEventListener("click", (event) => {
+                    if (icon.dataset.dragMoved === "true") {
+                        event.preventDefault();
+                    }
+                });
+            });
+        }
+
+        function preloadBackgroundImage(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                const timeoutId = window.setTimeout(() => resolve(null), 8000);
+
+                img.onload = () => {
+                    window.clearTimeout(timeoutId);
+                    resolve(url);
+                };
+
+                img.onerror = () => {
+                    window.clearTimeout(timeoutId);
+                    resolve(null);
+                };
+
+                img.src = url;
+            });
+        }
+
+        async function resolveWorkingBackgroundImages(primaryImages, fallbackImages) {
+            const uniquePrimaryImages = Array.from(new Set(primaryImages));
+            const verifiedPrimaryImages = (await Promise.all(uniquePrimaryImages.map(preloadBackgroundImage))).filter(Boolean);
+
+            if (verifiedPrimaryImages.length >= 2) {
+                return verifiedPrimaryImages;
+            }
+
+            const uniqueFallbackImages = Array.from(new Set(fallbackImages));
+            const verifiedFallbackImages = (await Promise.all(uniqueFallbackImages.map(preloadBackgroundImage))).filter(Boolean);
+
+            if (verifiedPrimaryImages.length > 0 && verifiedFallbackImages.length > 0) {
+                return [...verifiedPrimaryImages, ...verifiedFallbackImages];
+            }
+
+            return verifiedFallbackImages.length >= 2 ? verifiedFallbackImages : uniqueFallbackImages;
+        }
+
+        async function initializeBackgroundSlideshow() {
+            const defaultBackgroundImages = bundledCinematicImages.length >= 2 ? bundledCinematicImages : remoteFallbackCinematicImages;
+            const workingBackgroundImages = await resolveWorkingBackgroundImages(defaultBackgroundImages, remoteFallbackCinematicImages);
+            resolvedBackgroundImages = workingBackgroundImages;
+            setupBackgroundSlideshow(workingBackgroundImages);
+        }
+
+        initializeBackgroundSlideshow();
+        enableDraggableSocialIcons();
+
+        let backgroundResizeTimer = null;
+        window.addEventListener("resize", () => {
+            if (backgroundResizeTimer) {
+                window.clearTimeout(backgroundResizeTimer);
+            }
+
+            backgroundResizeTimer = window.setTimeout(() => {
+                const nextMobileViewport = window.matchMedia("(max-width: 920px)").matches;
+                if (nextMobileViewport !== isMobileViewport && resolvedBackgroundImages.length) {
+                    isMobileViewport = nextMobileViewport;
+                    setupBackgroundSlideshow(resolvedBackgroundImages);
+                }
+            }, 180);
+        });
+
+        const words = ["Innovation", "Sustainability", "Leadership", "Entrepreneurship", "Global Impact", "Community"];
+        const floating = document.getElementById("floatingWords");
+
+        for (let i = 0; i < 16; i += 1) {
+            const node = document.createElement("span");
+            node.className = "word";
+            node.textContent = words[i % words.length];
+            node.style.left = Math.random() * 90 + "%";
+            node.style.top = Math.random() * 100 + "%";
+            node.style.fontSize = 0.8 + Math.random() * 1.25 + "rem";
+            node.style.animationDelay = Math.random() * 9 + "s";
+            node.style.animationDuration = 12 + Math.random() * 10 + "s";
+            floating.appendChild(node);
+        }
+
+        const cvForm = document.getElementById("cvForm");
+        const statusText = document.getElementById("statusText");
+        const recruitmentSubject = document.getElementById("recruitmentSubject");
+        const recruitmentTarget = document.getElementById("recruitmentTarget");
+        const submitButton = cvForm.querySelector('button[type="submit"]');
+        let recruitmentSubmissionInFlight = false;
+
+        recruitmentTarget.addEventListener("load", () => {
+            if (!recruitmentSubmissionInFlight) {
+                return;
+            }
+
+            recruitmentSubmissionInFlight = false;
+            submitButton.disabled = false;
+            statusText.textContent = "Application sent successfully. Thank you for applying.";
+            cvForm.reset();
+        });
+
+        cvForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const message = document.getElementById("message").value.trim();
+            const cvInput = document.getElementById("cv");
+            const cvFile = cvInput.files[0];
+
+            if (!name || !email || !phone || !message || !cvFile) {
+                statusText.textContent = "Please complete all fields and attach your CV.";
+                return;
+            }
+
+            const allowedExtensions = ["pdf", "doc", "docx"];
+            const fileExtension = cvFile.name.split(".").pop().toLowerCase();
+
+            if (!allowedExtensions.includes(fileExtension)) {
+                statusText.textContent = "Please upload a PDF, DOC or DOCX CV file.";
+                return;
+            }
+
+            if (cvFile.size > 10 * 1024 * 1024) {
+                statusText.textContent = "Please upload a CV smaller than 10MB.";
+                return;
+            }
+
+            recruitmentSubject.value = "Recruitment Application - Enactus BUSE - " + name;
+
+            submitButton.disabled = true;
+            statusText.textContent = "Sending application...";
+            recruitmentSubmissionInFlight = true;
+            cvForm.submit();
+
+            window.setTimeout(() => {
+                if (!recruitmentSubmissionInFlight) {
+                    return;
+                }
+
+                recruitmentSubmissionInFlight = false;
+                submitButton.disabled = false;
+                statusText.textContent = "Submission may need a few more seconds. If no email arrives, verify the FormSubmit inbox activation email first.";
+            }, 15000);
+        });
+
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.animate(
+                            [{
+                                opacity: 0,
+                                transform: "translateY(35px)"
+                            }, {
+                                opacity: 1,
+                                transform: "translateY(0)"
+                            }], {
+                                duration: 900,
+                                easing: "cubic-bezier(.2,.7,.2,1)",
+                                fill: "forwards"
+                            }
+                        );
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.18
+            });
+
+            document.querySelectorAll(".about, .partners, .recruit, .contact").forEach((box) => observer.observe(box));
+        }
+    </script>
+</body>
+
+</html>
